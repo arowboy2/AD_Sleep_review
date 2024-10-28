@@ -1,15 +1,13 @@
-# Load necessary libraries
 library(meta)
 library(metafor)
 library(ggplot2)
 
-# Load the dataset and ensure proper handling of missing values
 data <- read.csv("~/Downloads/AD_no_interaction_plots.csv", na.strings = c("", "NA"))
 
 # Rename column for z_score with extra space to correct name
 colnames(data)[colnames(data) == "z_score "] <- "z_score"
 
-# Filter out PRS and APOE = 0, focusing on APOE4 >=1 only
+#  focusing on APOE4 >=1 only
 data_apoe4 <- subset(data, genetics == "APOE4 ≥1")
 
 # Check the number of rows in the filtered data
@@ -29,14 +27,9 @@ if (nrow(data_apoe4) > 0) {
   cat("No data found for APOE4 ≥ 1. Please check the data.")
 }
 ##### combined covary apoe
-# Load necessary libraries
-# Load necessary libraries
 library(meta)
 library(metafor)
 library(ggplot2)
-
-# Load the dataset and ensure proper handling of missing values
-data <- read.csv("~/Downloads/AD_no_interaction_plots.csv", na.strings = c("", "NA"))
 
 # Rename column for z_score with extra space to correct name
 colnames(data)[colnames(data) == "z_score "] <- "z_score"
@@ -60,7 +53,7 @@ if (nrow(data_apoe4) > 0) {
   # Display results
   print(meta_result_apoe4_covariates)
 } else {
-  cat("No data found for APOE4 ≥ 1. Please check the data.")
+  cat("No data.")
 }
 
 
@@ -73,7 +66,6 @@ library(meta)
 library(metafor)
 library(ggplot2)
 
-# Load the dataset
 data <- read.csv("~/Downloads/AD_no_interaction_plots.csv", na.strings = c("", "NA"))
 
 # Rename column for z_score due to spacing issue
@@ -88,7 +80,6 @@ category_pairs <- list(
   "Pair 3" = c("Sleep Quality & Sleep Disturbance", "Circadian Rhythm, Sleep Architecture, & Disorders")
 )
 
-# Function to check if a factor has 2 or more levels
 check_factor_levels <- function(df, var) {
   if (is.factor(df[[var]]) || is.character(df[[var]])) {
     return(length(unique(df[[var]])) > 1)
@@ -102,7 +93,6 @@ for (pair_name in names(category_pairs)) {
   pair_categories <- category_pairs[[pair_name]]
   pair_data <- subset(data_apoe4, sleep_main_grouping %in% pair_categories)
   
-  # Check if there's enough data for running analysesz
   if (nrow(pair_data) > 0) {
     
     # Run meta-regression for APOE4 ≥1 without covarieates
@@ -125,10 +115,10 @@ for (pair_name in names(category_pairs)) {
                                     test = "z", 
                                     data = pair_data)
       
-      cat("\nMeta-Analysis Results with Covariates for", pair_name, ":\n")
+      cat("\nResults with Covariates for", pair_name, ":\n")
       print(meta_result_covariates)
     } else {
-      cat("Skipping covariate model for", pair_name, "due to insufficient levels in covariates.\n")
+      cat("Skipping covariate model for", pair_name, "due to insuf covar\n")
     }
     
   } else {
@@ -145,10 +135,8 @@ library(ggplot2)
 # Load the dataset
 data <- read.csv("~/Downloads/AD_no_interaction_plots.csv", na.strings = c("", "NA"))
 
-# Rename column for z_score due to spacing issue
 colnames(data)[colnames(data) == "z_score "] <- "z_score"
 
-# Filter the dataset to include only APOE4 ≥1 (exclude PRS and APOE = 0)
 data_apoe4 <- subset(data, genetics == "APOE4 ≥1")
 
 # Define the sleep category pairs
@@ -166,15 +154,12 @@ check_factor_levels <- function(df, var) {
   return(TRUE)  # If not a factor, return TRUE
 }
 
-# Loop through each pair of sleep categories for APOE4 ≥1
 for (pair_name in names(category_pairs)) {
   cat("\nProcessing:", pair_name, "\n")
   
-  # Filter the data for the current sleep categories in the pair
   pair_categories <- category_pairs[[pair_name]]
   pair_data <- subset(data_apoe4, sleep_main_grouping %in% pair_categories)
   
-  # Check if there's enough data for analysis
   if (nrow(pair_data) > 0) {
     
     meta_result <- rma(yi = pair_data$z_score, 
@@ -194,10 +179,10 @@ for (pair_name in names(category_pairs)) {
                                     test = "z", 
                                     data = pair_data)
       
-      cat("\nMeta-Analysis Results with Covariates for", pair_name, ":\n")
+      cat("\nResults with covar for", pair_name, ":\n")
       print(meta_result_covariates)
     } else {
-      cat("Skipping covariate model for", pair_name, "due to insufficient levels in covariates.\n")
+      cat("Skip", pair_name, "due not good covariates.\n")
     }
     
   } else {
@@ -207,11 +192,6 @@ for (pair_name in names(category_pairs)) {
 
 #single:
 
-
-
-
-
-# Loop through each unique sleep category
 categories <- unique(data_apoe4$sleep_main_grouping)
 
 for (category in categories) {
@@ -233,28 +213,20 @@ for (category in categories) {
   } else {
     cat("Skipping category:", category, "due to lack of variation in one or more factors.\n")
   }
-}
-
-
-
 
 
 library(meta)
 library(metafor)
 library(ggplot2)
 
-# Load the dataset
 data <- read.csv("~/Downloads/AD_no_interaction_plots.csv", na.strings = c("", "NA"))
 
-# Rename column for z_score due to spacing issue
 colnames(data)[colnames(data) == "z_score "] <- "z_score"
 
 data_apoe4 <- subset(data, genetics == "APOE4 ≥1")
 
-# Define the sleep categories
 categories <- unique(data_apoe4$sleep_main_grouping)
 
-# Loop through each sleep category for APOE4 ≥1
 for (category in categories) {
   cat("\nProcessing category:", category, "\n")
   
@@ -272,11 +244,11 @@ for (category in categories) {
                        test = "z", 
                        data = category_data)
     
-    cat("\nMeta-analysis results for category", category, ":\n")
+    cat("\nresults", category, ":\n")
     print(meta_result)
     
   } else {
-    cat("Skipping category:", category, "due to insufficient data.\n")
+    cat("Skipping category:", category, "due to no data.\n")
   }
 }
 
@@ -310,14 +282,11 @@ check_factor_levels <- function(df, var) {
   return(TRUE)  # If not a factor, return TRUE
 }
 
-# Loop through each sleep category for APOE4 ≥1
 for (category in categories) {
   cat("\nProcessing category:", category, "\n")
   
-  # Filter by the current category
   category_data <- subset(data_apoe4, sleep_main_grouping == category)
   
-  # Check if there's enough data for analysis
   if (nrow(category_data) > 0) {
     
     # List of potential covariates
@@ -326,7 +295,6 @@ for (category in categories) {
     # Filter out covariates that don't have 2 or more levels
     valid_covariates <- covariates[sapply(covariates, function(var) check_factor_levels(category_data, var))]
     
-    # Build the formula dynamically based on valid covariates
     if (length(valid_covariates) > 0) {
       formula <- as.formula(paste("~", paste(valid_covariates, collapse = " + ")))
       
@@ -338,15 +306,15 @@ for (category in categories) {
                          test = "z", 
                          data = category_data)
       
-      cat("\nMeta-analysis results for category", category, ":\n")
+      cat("\ncategory per result", category, ":\n")
       print(meta_result)
       
     } else {
-      cat("Skipping covariate model for category:", category, "due to insufficient levels in covariates.\n")
+      cat("Skip:", category, "due to not enough datra.\n")
     }
     
   } else {
-    cat("Skipping category:", category, "due to insufficient data.\n")
+    cat("Skip:", category, "due to not enoughdata.\n")
   }
 }
 
